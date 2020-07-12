@@ -4,24 +4,34 @@
       <h2 class="title">Heroes</h2>
     </div>
     <div class="columns">
-      <div class="column is-8">
-        <div class="card edit-detail">
+      <div class="column is-4">
+        <div class="card edit-detail" v-if="selectedHero">
           <header class="card-header">
-            <p class="card-header-title">{{ hero.firstName }}</p>
+            <p class="card-header-title">{{ selectedHero.firstName }}</p>
           </header>
           <div class="card-content">
             <div class="content">
               <div class="field">
                 <label class="label" for="id">id</label>
-                <label class="input" id="id" readonly>{{ hero.id }}</label>
+                <label class="input" id="id" readonly>{{
+                  selectedHero.id
+                }}</label>
               </div>
               <div class="field">
                 <label class="label" for="firstName">first name</label>
-                <input class="input" id="firstName" v-model="hero.firstName" />
+                <input
+                  class="input"
+                  id="firstName"
+                  v-model="selectedHero.firstName"
+                />
               </div>
               <div class="field">
                 <label class="label" for="lastName">last name</label>
-                <input class="input" id="lastName" v-model="hero.lastName" />
+                <input
+                  class="input"
+                  id="lastName"
+                  v-model="selectedHero.lastName"
+                />
               </div>
               <div class="field">
                 <label class="label" for="description">description</label>
@@ -29,72 +39,83 @@
                   class="input"
                   id="description"
                   type="text"
-                  v-model="hero.description"
+                  v-model="selectedHero.description"
                 />
               </div>
-              <div class="field">
-                <label class="label">cape color</label>
-                <label class="radio" for="color-red">
-                  <input
-                    type="radio"
-                    id="color-red"
-                    value="red"
-                    v-model="hero.capeColor"
-                  />
-                  red
-                </label>
-                <label class="radio" for="color-blue">
-                  <input
-                    type="radio"
-                    id="color-blue"
-                    value="blue"
-                    v-model="hero.capeColor"
-                  />
-                  blue
-                </label>
-                <label class="radio" for="color-green">
-                  <input
-                    type="radio"
-                    id="color-green"
-                    value="green"
-                    v-model="hero.capeColor"
-                  />
-                  green
-                </label>
-                <div
-                  class="color-line"
-                  :style="{ 'background-color': hero.capeColor }"
-                ></div>
-              </div>
-              <div class="field">
-                <label for="power">
-                  super power
-                  <div class="select is-primary">
-                    <select
-                      id="power"
-                      v-model="hero.power"
-                      :class="{ invalid: !hero.power }"
-                      @keyup.esc="clearPower"
-                    >
-                      <option disabled value>Please select one</option>
-                      <option>Speed</option>
-                      <option>Flight</option>
-                      <option>Strength</option>
-                      <option>Invisibility</option>
-                    </select>
-                  </div>
-                </label>
-              </div>
-              <div class="field">
-                <label class="checkbox" for="active">
-                  active
-                  <input
-                    type="checkbox"
-                    class="is-primary"
-                    id="active"
-                    v-model="hero.active"
-                  />
-                </label>
+              <label for="show" class="checkbox">
+                show more
+                <input
+                  type="checkbox"
+                  class="is-primary"
+                  id="show"
+                  v-model="showMore"
+                />
+              </label>
+              <div v-show="showMore">
+                <div class="field">
+                  <label class="label">cape color</label>
+                  <label class="radio" for="color-red">
+                    <input
+                      type="radio"
+                      id="color-red"
+                      value="red"
+                      v-model="selectedHero.capeColor"
+                    />
+                    red
+                  </label>
+                  <label class="radio" for="color-blue">
+                    <input
+                      type="radio"
+                      id="color-blue"
+                      value="blue"
+                      v-model="selectedHero.capeColor"
+                    />
+                    blue
+                  </label>
+                  <label class="radio" for="color-green">
+                    <input
+                      type="radio"
+                      id="color-green"
+                      value="green"
+                      v-model="selectedHero.capeColor"
+                    />
+                    green
+                  </label>
+                  <div
+                    class="color-line"
+                    :style="{ 'background-color': selectedHero.capeColor }"
+                  ></div>
+                </div>
+                <div class="field">
+                  <label for="power">
+                    super power
+                    <div class="select is-primary">
+                      <select
+                        id="power"
+                        v-model="selectedHero.power"
+                        :class="{ invalid: !selectedHero.power }"
+                        @keyup.esc="clearPower"
+                      >
+                        <option disabled value>Please select one</option>
+                        <option>Speed</option>
+                        <option>Flight</option>
+                        <option>Strength</option>
+                        <option>Invisibility</option>
+                      </select>
+                    </div>
+                  </label>
+                </div>
+                <div class="field">
+                  <label class="checkbox" for="active">
+                    active
+                    <input
+                      type="checkbox"
+                      class="is-primary"
+                      id="active"
+                      v-model="selectedHero.active"
+                    />
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -116,6 +137,27 @@
           <pre style="color: black">{{ message }}</pre>
         </div>
       </div>
+      <div class="column is-1"></div>
+      <div class="column is-6">
+        <div class="card edit-detail">
+          <header class="card-header">
+            <p class="card-header-title">Heroes List</p>
+          </header>
+          <div class="card-content">
+            <ul class="list is-hoverable">
+              <li v-for="hero in heroes" :key="hero.id">
+                <a
+                  class="list-item"
+                  :class="{ 'is-active': selectedHero === hero }"
+                  @click="selectedHero = hero"
+                >
+                  <span>{{ hero.firstName }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -125,16 +167,47 @@ export default {
   name: 'Heroes',
   data() {
     return {
-      hero: {
-        id: 3,
-        firstName: 'tapiwa',
-        lastName: 'lason',
-        description: 'fire fighter',
-        capeColor: '',
-        power: '',
-        active: true,
-      },
       message: '',
+      selectedHero: null,
+      showMore: false,
+      heroes: [
+        {
+          id: 3,
+          firstName: 'tapiwa',
+          lastName: 'lason',
+          description: 'fire fighter',
+          capeColor: 'blue',
+          power: 'Strength',
+          active: true,
+        },
+        {
+          id: 20,
+          firstName: 'John',
+          lastName: 'Stockton',
+          description: 'the cat whisperer',
+          capeColor: 'blue',
+          power: 'Speed',
+          active: true,
+        },
+        {
+          id: 30,
+          firstName: 'Karl',
+          lastName: 'Malone',
+          description: 'pen wielder',
+          capeColor: 'red',
+          power: 'Strength',
+          active: false,
+        },
+        {
+          id: 40,
+          firstName: 'Larry',
+          lastName: 'Bird',
+          description: 'arc trooper',
+          capeColor: 'green',
+          power: 'Invisibility',
+          active: true,
+        },
+      ],
     };
   },
   methods: {
@@ -142,10 +215,10 @@ export default {
       this.message = '';
     },
     saveHero() {
-      this.message = JSON.stringify(this.hero, null, '\n');
+      this.message = JSON.stringify(this.selectedHero, null, '\n');
     },
     clearPower() {
-      this.hero.power = '';
+      this.selectedHero.power = '';
     },
   },
 };
