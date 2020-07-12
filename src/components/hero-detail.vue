@@ -154,10 +154,11 @@
 
 <script>
 import { parseISO, format } from 'date-fns';
+import { lifecycleHooks, displayDateFormat } from '../shared';
 
-const displayDateFormat = 'MMM dd, yyyy';
 export default {
   name: 'HeroDetail',
+  mixins: [lifecycleHooks],
   props: {
     hero: {
       type: Object,

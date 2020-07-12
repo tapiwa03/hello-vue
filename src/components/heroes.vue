@@ -55,7 +55,12 @@
 <script>
 import HeroDetail from '@/components/hero-detail';
 import { format } from 'date-fns';
-const inputDateFormat = 'yyyy-MM-dd';
+import {
+  inputDateFormat,
+  lifecycleHooks,
+  heroWatchers,
+  logger,
+} from '../shared';
 
 const heroes = [
   {
@@ -107,6 +112,7 @@ const heroes = [
 export default {
   name: 'Heroes',
   components: { HeroDetail },
+  mixins: [lifecycleHooks, heroWatchers],
   data() {
     return {
       selectedHero: null,
@@ -140,6 +146,7 @@ export default {
   },
   created() {
     this.loadHeroes();
+    logger.info(`${this.componentName} created hook called`);
   },
 };
 </script>
