@@ -7,7 +7,7 @@
       <div class="column is-4">
         <div class="card edit-detail" v-if="selectedHero">
           <header class="card-header">
-            <p class="card-header-title">{{ selectedHero.firstName }}</p>
+            <p class="card-header-title">{{ fullName }}</p>
           </header>
           <div class="card-content">
             <div class="content">
@@ -50,8 +50,25 @@
                   id="show"
                   v-model="showMore"
                 />
+                <br />
               </label>
               <div v-show="showMore">
+                <div class="field">
+                  <label class="label" for="capeCounter">cape counter</label>
+                  <input
+                    class="input"
+                    id="capeCounter"
+                    type="number"
+                    min="0"
+                    v-model="selectedHero.capeCounter"
+                  />
+                  <label
+                    class="label"
+                    id="capeMessage"
+                    style="color: #42b883"
+                    >{{ capeMessage }}</label
+                  >
+                </div>
                 <div class="field">
                   <label class="label">cape color</label>
                   <label class="radio" for="color-red">
@@ -163,51 +180,57 @@
 </template>
 
 <script>
+const heroes = [
+  {
+    id: 3,
+    firstName: 'Tapiwa',
+    lastName: 'lason',
+    description: 'fire fighter',
+    capeCounter: 1,
+    capeColor: 'blue',
+    power: 'Strength',
+    active: true,
+  },
+  {
+    id: 20,
+    firstName: 'John',
+    lastName: 'Stockton',
+    description: 'the cat whisperer',
+    capeCounter: 4,
+    capeColor: 'blue',
+    power: 'Speed',
+    active: true,
+  },
+  {
+    id: 30,
+    firstName: 'Karl',
+    lastName: 'Malone',
+    description: 'pen wielder',
+    capeCounter: 0,
+    capeColor: 'red',
+    power: 'Strength',
+    active: false,
+  },
+  {
+    id: 40,
+    firstName: 'Larry',
+    lastName: 'Bird',
+    description: 'arc trooper',
+    capeCounter: 2,
+    capeColor: 'green',
+    power: 'Invisibility',
+    active: true,
+  },
+];
 export default {
   name: 'Heroes',
   data() {
     return {
       message: '',
+      capeMessage: '',
       selectedHero: null,
       showMore: false,
-      heroes: [
-        {
-          id: 3,
-          firstName: 'tapiwa',
-          lastName: 'lason',
-          description: 'fire fighter',
-          capeColor: 'blue',
-          power: 'Strength',
-          active: true,
-        },
-        {
-          id: 20,
-          firstName: 'John',
-          lastName: 'Stockton',
-          description: 'the cat whisperer',
-          capeColor: 'blue',
-          power: 'Speed',
-          active: true,
-        },
-        {
-          id: 30,
-          firstName: 'Karl',
-          lastName: 'Malone',
-          description: 'pen wielder',
-          capeColor: 'red',
-          power: 'Strength',
-          active: false,
-        },
-        {
-          id: 40,
-          firstName: 'Larry',
-          lastName: 'Bird',
-          description: 'arc trooper',
-          capeColor: 'green',
-          power: 'Invisibility',
-          active: true,
-        },
-      ],
+      heroes: [],
     };
   },
   methods: {
@@ -219,6 +242,50 @@ export default {
     },
     clearPower() {
       this.selectedHero.power = '';
+    },
+    async getHeroes() {
+      return new Promise(resolve => {
+        setTimeout(() => resolve(heroes), 1500);
+      });
+    },
+    async loadHeroes() {
+      this.heroes = [];
+      this.message = 'Getting heroes, please wait...';
+      this.heroes = await this.getHeroes();
+      this.message = '';
+    },
+    handleCapes(newValue) {
+      const value = parseInt(newValue, 10);
+      switch (value) {
+        case 0:
+          this.capeMessage = 'Where is my cape?';
+          break;
+        case 1:
+          this.capeMessage = 'One is all I need';
+          break;
+        case 2:
+          this.capeMessage = 'Alway have a spare';
+          break;
+        default:
+          this.capeMessage = 'You can never have enough capes';
+          break;
+      }
+    },
+  },
+  computed: {
+    fullName() {
+      return `${this.selectedHero.firstName} ${this.selectedHero.lastName}`;
+    },
+  },
+  created() {
+    this.loadHeroes();
+  },
+  watch: {
+    'selectedHero.capeCounter': {
+      immediate: true,
+      handler(newVal) {
+        this.handleCapes(newVal);
+      },
     },
   },
 };
