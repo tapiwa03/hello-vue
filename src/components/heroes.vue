@@ -54,6 +54,19 @@
               </label>
               <div v-show="showMore">
                 <div class="field">
+                  <label class="label" for="originDate">origin date</label>
+                  <input
+                    class="input"
+                    id="originDate"
+                    type="date"
+                    v-model="selectedHero.originDate"
+                  />
+                  <p class="comment">
+                    My origin story began on
+                    {{ selectedHero.originDate | shortDate }}
+                  </p>
+                </div>
+                <div class="field">
                   <label class="label" for="capeCounter">cape counter</label>
                   <input
                     class="input"
@@ -180,6 +193,9 @@
 </template>
 
 <script>
+import { parseISO, format } from 'date-fns';
+const inputDateFormat = 'yyyy-MM-dd';
+const displayDateFormat = 'MMM dd, yyyy';
 const heroes = [
   {
     id: 3,
@@ -188,6 +204,7 @@ const heroes = [
     description: 'fire fighter',
     capeCounter: 1,
     capeColor: 'blue',
+    originDate: format(new Date(2000, 5, 1), inputDateFormat),
     power: 'Strength',
     active: true,
   },
@@ -198,6 +215,7 @@ const heroes = [
     description: 'the cat whisperer',
     capeCounter: 4,
     capeColor: 'blue',
+    originDate: format(new Date(2010, 7, 11), inputDateFormat),
     power: 'Speed',
     active: true,
   },
@@ -208,6 +226,7 @@ const heroes = [
     description: 'pen wielder',
     capeCounter: 0,
     capeColor: 'red',
+    originDate: format(new Date(2007, 2, 8), inputDateFormat),
     power: 'Strength',
     active: false,
   },
@@ -218,10 +237,12 @@ const heroes = [
     description: 'arc trooper',
     capeCounter: 2,
     capeColor: 'green',
+    originDate: format(new Date(2020, 4, 4), inputDateFormat),
     power: 'Invisibility',
     active: true,
   },
 ];
+
 export default {
   name: 'Heroes',
   data() {
@@ -286,6 +307,11 @@ export default {
       handler(newVal) {
         this.handleCapes(newVal);
       },
+    },
+  },
+  filters: {
+    shortDate: val => {
+      return format(parseISO(val), displayDateFormat);
     },
   },
 };
